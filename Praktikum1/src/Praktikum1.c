@@ -48,8 +48,7 @@ int main(int argc, char* argv[]) {
     puts("| Radius | Kreisfläche");
     for(r = 1; r <= 20; r++) {
     	f = kreis_flaeche(r);
-    	printf("| %d      | %f", r , f);
-    	printf("\n");
+    	printf("| %d \t | %f \n", r , f);
     }
 
     return 0;
