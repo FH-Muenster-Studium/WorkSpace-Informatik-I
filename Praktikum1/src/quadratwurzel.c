@@ -43,6 +43,7 @@ int main(int argc, char* argv[]) {
     ergebnis = quadrat(eingabe);
     printf("Das Quadrat der Zahl %d ist %f\n", eingabe, ergebnis);
 
+    /* Hier wird gerechnet */
     int r;
     double f;
     puts("| Radius | Kreisfläche");

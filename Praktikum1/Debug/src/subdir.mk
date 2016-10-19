@@ -4,13 +4,13 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../src/Praktikum1.c 
+../src/quadratwurzel.c 
 
 OBJS += \
-./src/Praktikum1.o 
+./src/quadratwurzel.o 
 
 C_DEPS += \
-./src/Praktikum1.d 
+./src/quadratwurzel.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
