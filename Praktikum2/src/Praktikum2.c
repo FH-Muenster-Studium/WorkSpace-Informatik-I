@@ -38,9 +38,7 @@ int main(void) {
 			printf("%d \n", i);
 		}*/
 	}
-	if (COUNT_2 > INT_MAX) {
-		return EXIT_FAILURE;
-	}
+	
 	for (int i = 2; i < COUNT_2; i++) {
 		int primzahl = 1;
 		for (int j = 2; primzahl == 1 && j < i; j++) {
