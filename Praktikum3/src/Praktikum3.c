@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <unistd.h>
+#include <string.h>
 
 
 #define PUFFER_SIZE 100
@@ -19,6 +20,10 @@
 int istPrim(int zahl);
 
 int primzahlenBis(int zahl);
+
+void inBits(char lights);
+
+int lower(int a);
 
 //void encrypt(char old*, char key[]);
 
@@ -54,7 +59,7 @@ int main(void) {
 	}
 	puts("\n\nAufgabe 2)");
 
-	printf("%d", primzahlenBis(8));
+	printf("%d", primzahlenBis(10000));
 
 	puts("\n\nAufgabe 3)");
 
@@ -94,8 +99,7 @@ int main(void) {
 			int index = current - '0' - offset;
 			string[i] = key[index];
 		} else if (current == '.' || current == ',' || current == '_') {
-			int index = atoi(&current);
-			char encrypted = key[index];
+			char encrypted = key[current];
 			if (encrypted != '0') {
 				string[i] = encrypted;
 			}
@@ -112,12 +116,21 @@ int main(void) {
 			for(int j = 0 ;j < sizeof(key) / sizeof(char); j++) {
 				char currentKey = key[j];
 				if (currentKey == current) {
-					string[i] = j + 'a' + '\0';
+					if (j > 25) {
+						printf("%d", current);
+						string[i] = j;
+					} else {
+						string[i] = j + 'a' + '\0';
+					}
 				}
 			}
 		}
 
 	printf("Ihre Eingabe unverschlüsselt: %s\n",string);
+
+
+	char lights = 0;
+
 
 	return EXIT_SUCCESS;
 }
@@ -140,6 +153,17 @@ int primzahlenBis(int zahl) {
 		}
 	}
 	return count;
+}
+
+void inBits(char lights) {
+	printf("%c", lights);
+}
+
+int lower(int a)
+{
+    if ((a >= 0x41) && (a <= 0x5A))
+        a |= 0x20;
+    return a;
 }
 
 /*void encrypt(char old*, char key[]) {
