@@ -13,6 +13,7 @@
 #include <ctype.h>
 #include <unistd.h>
 #include <string.h>
+#include <math.h>
 
 
 #define PUFFER_SIZE 100
@@ -26,6 +27,8 @@ void inBits(char lights);
 int lower(int a);
 
 //void encrypt(char old*, char key[]);
+
+void lampeSchalten(char *lights, int *index, int *command);
 
 int main(void) {
 	puts("Aufgabe 1)");
@@ -41,17 +44,11 @@ int main(void) {
 	char string2[100];
 	for (int i = length - 1; i >= 0; i--) {
 		char current = string[i];
-		/*if (current == '\0') {
-			break;
-		}*/
 		if (current == 0) {
 			continue;
 		}
 		string2[count] = current;
 		count++;
-		/*if (i - 1 < 0) {
-			string2[count] = '0';
-		}*/
 	}
 	for (int i = 0; i < count; i++) {
 		char current = string2[i];
@@ -72,21 +69,21 @@ int main(void) {
 	}
 	printf("Ihre Eingabe in klein: %s\n",string);
 
-	char key[99] = {
-				'b', 'j', ',', 'o', 't', 'd','g',//0 - 6
-				'l', 'h', 'r', 'k', 'i', 'c', 'x',//7 - 13
-				'a', 'm', '.', 'p', 'z', 'y', 'e',//14 - 20
-				'v','_', 'q', 'n', 's', '0', '0',//21 - 27
-				'0','0', '0', '0', '0', '0', '0',//28 - 34
-				'0', '0','0', '0', '0', '0', '0',//35 - 41
-				'0', '0', 'w', '0', 'u', '0', '0',//42 - 48
-				'0', '0', '0', '0', '0', '0', '0',//49 - 55
-				'0', '0', '0', '0', '0', '0', '0',//56 - 62
-				'0', '0', '0', '0', '0', '0', '0',//63 - 69
-				'0', '0', '0', '0', '0', '0', '0',//70 - 76
-				'0', '0', '0', '0', '0', '0', '0',//77 - 83
-				'0', '0', '0', '0', '0', '0', '0',//84 - 90
-				'0', '0', '0', '0', 'f', '0', '0'//91 - 97
+	char key[98] = {
+			'b', 'j', ',', 'o', 't', 'd','g',//0 - 6
+			'l', 'h', 'r', 'k', 'i', 'c', 'x',//7 - 13
+			'a', 'm', '.', 'p', 'z', 'y', 'e',//14 - 20
+			'v','_', 'q', 'n', 's', '0', '0',//21 - 27
+			'0','0', '0', '0', '0', '0', '0',//28 - 34
+			'0', '0','0', '0', '0', '0', '0',//35 - 41
+			'0', '0', 'w', '0', 'u', '0', '0',//42 - 48
+			'0', '0', '0', '0', '0', '0', '0',//49 - 55
+			'0', '0', '0', '0', '0', '0', '0',//56 - 62
+			'0', '0', '0', '0', '0', '0', '0',//63 - 69
+			'0', '0', '0', '0', '0', '0', '0',//70 - 76
+			'0', '0', '0', '0', '0', '0', '0',//77 - 83
+			'0', '0', '0', '0', '0', '0', '0',//84 - 90
+			'0', '0', '0', '0', 'f', '0', '0'//91 - 97
 	};
 
 	int offset = 'a' - '0';
@@ -109,30 +106,62 @@ int main(void) {
 	printf("Ihre Eingabe verschlüsselt: %s\n",string);
 
 	for (int i = 0;i < sizeof(string) / sizeof(char); i++) {
-			char current = string[i];
-			if (current == 0) {
-				continue;
-			}
-			for(int j = 0 ;j < sizeof(key) / sizeof(char); j++) {
-				char currentKey = key[j];
-				if (currentKey == current) {
-					if (j > 25) {
-						printf("%d", current);
-						string[i] = j;
-					} else {
-						string[i] = j + 'a' + '\0';
-					}
+		char current = string[i];
+		if (current == 0) {
+			continue;
+		}
+		for(int j = 0 ;j < sizeof(key) / sizeof(char); j++) {
+			char currentKey = key[j];
+			if (currentKey == current) {
+				if (j > 25) {
+					printf("%d", current);
+					string[i] = j;
+				} else {
+					string[i] = j + 'a' + '\0';
 				}
 			}
 		}
+	}
 
 	printf("Ihre Eingabe unverschlüsselt: %s\n",string);
 
-
 	char lights = 0;
 
+	/*lampe 7 an*/
+
+	/*
+	 * 0 0 0 0 0 0 0 0
+	 * Lampe 4 auf 1  ( 2^4 )  + char/string = lights
+	 * 0 0 0 0 1 0 0 0
+	 * Lampe 7 auf 1 2 ( 2^7 )
+	 * 0 1 0 0 1 0 0 0
+	 *
+	 */
+
+	char eingabe[4] = {0,0,0,0};
+	int index = 0;
+	int command = 0;
+	do {
+		printf("Lampe(index)-Command(X/-)");
+		fflush(stdout);
+		fgets(eingabe, 4, stdin);
+		index = (int) eingabe[0] - 48;
+		printf("index: %d \n", index);
+		command = eingabe[1] == 'x' ? 1 : 0;
+		printf("command %d", command);
+		lampeSchalten(&lights, &index, &command);
+	} while(eingabe != 0);
 
 	return EXIT_SUCCESS;
+}
+
+void inBits(char lights) {
+	puts("\n");
+	for (int i = 7; i >= 0; --i)
+	{
+		printf("%c", (lights & (1 << i)) ? '1' : '0' );
+	}
+	puts("\n");
 }
 
 int istPrim(int zahl) {
@@ -155,17 +184,19 @@ int primzahlenBis(int zahl) {
 	return count;
 }
 
-void inBits(char lights) {
-	printf("%c", lights);
-}
-
 int lower(int a)
 {
-    if ((a >= 0x41) && (a <= 0x5A))
-        a |= 0x20;
-    return a;
+	if ((a >= 0x41) && (a <= 0x5A))
+		a |= 0x20;
+	return a;
 }
 
-/*void encrypt(char old*, char key[]) {
-	//*old = 'c';
-}*/
+void lampeSchalten(char *lights, int *index, int *command) {
+	int div = round(pow(2, *index - 1));
+	if (*command == 0) {
+		div = -div;
+	}
+	*lights += div;
+
+	inBits(*lights);
+}
