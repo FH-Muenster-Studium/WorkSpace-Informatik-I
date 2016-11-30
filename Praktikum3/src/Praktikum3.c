@@ -8,52 +8,21 @@
  ============================================================================
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <ctype.h>
-#include <unistd.h>
-#include <string.h>
-#include <math.h>
-
-
-#define PUFFER_SIZE 100
-
-int istPrim(int zahl);
-
-int primzahlenBis(int zahl);
-
-void inBits(char lights);
-
-int lower(int a);
-
-//void encrypt(char old*, char key[]);
-
-void lampeSchalten(char *lights, int *index, int *command);
+#include "Praktikum3.h"
 
 int main(void) {
 	puts("Aufgabe 1)");
 	char string[PUFFER_SIZE];
 	int length = sizeof(string) / sizeof(char);
-	for (int i = 0; i < length; i++)
-		string[i] = 0;
+	fillArray(&length, string);
 	printf("Geben Sie ein paar Wörter ein : ");
 	fflush(stdout);
 	fgets(string, 100, stdin);
 	printf("Ihre Eingabe: %s\n",string);
 	int count = 0;
 	char string2[100];
-	for (int i = length - 1; i >= 0; i--) {
-		char current = string[i];
-		if (current == 0) {
-			continue;
-		}
-		string2[count] = current;
-		count++;
-	}
-	for (int i = 0; i < count; i++) {
-		char current = string2[i];
-		printf("%c", current);
-	}
+	reverseInput(&length, &count, string, string2);
+	printf("%s", string2);
 	puts("\n\nAufgabe 2)");
 
 	printf("%d", primzahlenBis(10000));
@@ -64,12 +33,11 @@ int main(void) {
 	fflush(stdout);
 	fgets(string, 100, stdin);
 	printf("Ihre Eingabe: %s\n",string);
-	for (int i = 0; i <  sizeof(string) / sizeof(char); i++) {
-		string[i] = tolower(string[i]);
-	}
+	length =  sizeof(string) / sizeof(char);
+	lowerCharArray(&length, string);
 	printf("Ihre Eingabe in klein: %s\n",string);
 
-	char key[98] = {
+	char key[KEY_SIZE] = {
 			'b', 'j', ',', 'o', 't', 'd','g',//0 - 6
 			'l', 'h', 'r', 'k', 'i', 'c', 'x',//7 - 13
 			'a', 'm', '.', 'p', 'z', 'y', 'e',//14 - 20
@@ -86,48 +54,15 @@ int main(void) {
 			'0', '0', '0', '0', 'f', '0', '0'//91 - 97
 	};
 
-	int offset = 'a' - '0';
-	for (int i = 0;i < sizeof(string) / sizeof(char); i++) {
-		char current = string[i];
-		if (current == 0) {
-			continue;
-		}
-		if (current >= 'a' && current <= 'z') {
-			int index = current - '0' - offset;
-			string[i] = key[index];
-		} else if (current == '.' || current == ',' || current == '_') {
-			char encrypted = key[current];
-			if (encrypted != '0') {
-				string[i] = encrypted;
-			}
-		}
-	}
+	encryptInput(key, &length, string);
 
 	printf("Ihre Eingabe verschlüsselt: %s\n",string);
 
-	for (int i = 0;i < sizeof(string) / sizeof(char); i++) {
-		char current = string[i];
-		if (current == 0) {
-			continue;
-		}
-		for(int j = 0 ;j < sizeof(key) / sizeof(char); j++) {
-			char currentKey = key[j];
-			if (currentKey == current) {
-				if (j > 25) {
-					printf("%d", current);
-					string[i] = j;
-				} else {
-					string[i] = j + 'a' + '\0';
-				}
-			}
-		}
-	}
+	decryptInput(key, &length, string);
 
 	printf("Ihre Eingabe unverschlüsselt: %s\n",string);
 
 	char lights = 0;
-
-	/*lampe 7 an*/
 
 	/*
 	 * 0 0 0 0 0 0 0 0
@@ -150,9 +85,68 @@ int main(void) {
 		command = eingabe[1] == 'x' ? 1 : 0;
 		printf("command %d", command);
 		lampeSchalten(&lights, &index, &command);
-	} while(eingabe != 0);
+	} while(index >= 0);
 
 	return EXIT_SUCCESS;
+}
+
+void lowerCharArray(int *length, char array[]) {
+	for (int i = 0; i < *length; i++)
+		array[i] = tolower(array[i]);
+}
+
+void fillArray(int *length, char array[]) {
+	for (int i = 0; i < *length; i++)
+		array[i] = 0;
+}
+
+void reverseInput(int *length, int *count, char string[], char string2[]) {
+	for (int i = *length - 1; i >= 0; i--) {
+		char current = string[i];
+		if (current == 0) {
+			continue;
+		}
+		string2[*count] = current;
+		*count += 1;
+	}
+}
+
+void encryptInput(char key[], int *length, char input[]) {
+	int offset = 'a' - '0';
+	for (int i = 0;i < *length; i++) {
+		char current = input[i];
+		if (current == 0) {
+			continue;
+		}
+		if (current >= 'a' && current <= 'z') {
+			int index = current - '0' - offset;
+			input[i] = key[index];
+		} else if (current == '.' || current == ',' || current == '_') {
+			char encrypted = key[(int)current];
+			if (encrypted != '0') {
+				input[i] = encrypted;
+			}
+		}
+	}
+}
+
+void decryptInput(char key[], int *length, char input[]) {
+	for (int i = 0;i < *length; i++) {
+			char current = input[i];
+			if (current == 0) {
+				continue;
+			}
+			for(int j = 0 ;j < KEY_SIZE; j++) {
+				char currentKey = key[j];
+				if (currentKey == current) {
+					if (j > 25) {
+						input[i] = j;
+					} else {
+						input[i] = j + 'a' + '\0';
+					}
+				}
+			}
+		}
 }
 
 void inBits(char lights) {
@@ -182,13 +176,6 @@ int primzahlenBis(int zahl) {
 		}
 	}
 	return count;
-}
-
-int lower(int a)
-{
-	if ((a >= 0x41) && (a <= 0x5A))
-		a |= 0x20;
-	return a;
 }
 
 void lampeSchalten(char *lights, int *index, int *command) {
