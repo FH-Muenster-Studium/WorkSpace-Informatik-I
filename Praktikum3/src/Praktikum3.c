@@ -17,10 +17,10 @@ int main(void) {
 	fillArray(&length, string);
 	printf("Geben Sie ein paar Wörter ein : ");
 	fflush(stdout);
-	fgets(string, 100, stdin);
+	fgets(string, PUFFER_SIZE, stdin);
 	printf("Ihre Eingabe: %s\n",string);
 	int count = 0;
-	char string2[100];
+	char string2[PUFFER_SIZE];
 	reverseInput(&length, &count, string, string2);
 	printf("%s", string2);
 	puts("\n\nAufgabe 2)");
@@ -31,7 +31,7 @@ int main(void) {
 
 	printf("Geben Sie ein paar Wörter ein : ");
 	fflush(stdout);
-	fgets(string, 100, stdin);
+	fgets(string, PUFFER_SIZE, stdin);
 	printf("Ihre Eingabe: %s\n",string);
 	length =  sizeof(string) / sizeof(char);
 	lowerCharArray(&length, string);
