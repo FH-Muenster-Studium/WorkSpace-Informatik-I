@@ -73,14 +73,14 @@ int main(void) {
 	 *
 	 */
 
-	char eingabe[4] = {0,0,0,0};
+	char eingabe[SMALL_PUFFER_SIZE] = {0,0,0,0};
 	int index = 0;
 	int command = 0;
 	do {
 		printf("Lampe(index)-Command(X/-)");
 		fflush(stdout);
-		fgets(eingabe, 4, stdin);
-		index = (int) eingabe[0] - 48;
+		fgets(eingabe, SMALL_PUFFER_SIZE, stdin);
+		index = (int) eingabe[0] - '0';
 		printf("index: %d \n", index);
 		command = eingabe[1] == 'x' ? 1 : 0;
 		printf("command %d", command);
