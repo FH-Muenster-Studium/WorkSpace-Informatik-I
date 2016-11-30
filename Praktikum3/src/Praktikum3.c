@@ -151,9 +151,14 @@ void decryptInput(char key[], int *length, char input[]) {
 
 void inBits(char lights) {
 	puts("\n");
+	for (int i = 8; i >= 1; --i)
+	{
+		printf("| %d |", i);
+	}
+	printf("\n");
 	for (int i = 7; i >= 0; --i)
 	{
-		printf("%c", (lights & (1 << i)) ? '1' : '0' );
+		printf("| %c |", (lights & (1 << i)) ? 'X' : '-' );
 	}
 	puts("\n");
 }
