@@ -20,7 +20,7 @@ void randomize(long values[RANDOM_LENGTH][KEY_VALUE]) {
 
 void qs(long daten[RANDOM_LENGTH][KEY_VALUE], long links, long rechts) {
 	long i,j;
-	long x,y;
+	long x,y,z;
 
 	i=links; j=rechts;
 	x = daten[(links+rechts)/2][1]; // mittleres Element
@@ -31,9 +31,11 @@ void qs(long daten[RANDOM_LENGTH][KEY_VALUE], long links, long rechts) {
 
 		if (i<=j) {                                     // vertausche Elemente
 			y = daten[i][1];
+			z = daten[i][0];
 			daten[i][1] = daten[j][1];
-			//daten[i][0] = daten[j][0];
+			daten[i][0] = daten[j][0];
 			daten[j][1] = y;
+			daten[j][0] = z;
 			i++; j--;
 		}
 	} while (i<=j);
