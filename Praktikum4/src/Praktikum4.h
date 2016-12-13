@@ -9,7 +9,8 @@
 #define PRAKTIKUM4_H_
 
 #define KEY_VALUE 2
-#define RANDOM_LENGTH 100
+#define RANDOM_LENGTH 100000
+#define END_READ -1
 
 #include <stdio.h>
 #include <stdlib.h>

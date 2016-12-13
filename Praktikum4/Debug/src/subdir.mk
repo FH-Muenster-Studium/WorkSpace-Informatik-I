@@ -5,15 +5,18 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
 ../src/Praktikum4.c \
-../src/main.c 
+../src/main.c \
+../src/tests.c 
 
 OBJS += \
 ./src/Praktikum4.o \
-./src/main.o 
+./src/main.o \
+./src/tests.o 
 
 C_DEPS += \
 ./src/Praktikum4.d \
-./src/main.d 
+./src/main.d \
+./src/tests.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

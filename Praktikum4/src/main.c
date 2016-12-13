@@ -7,46 +7,48 @@
 
 #include "Praktikum4.h"
 
+#include "tests.h"
+
 int main(void) {
 	//char string[100];
 	//fflush(stdout);
 	//fgets(string, 100, stdin);
+	//strtok(str, "\r\n");
 	//printf("%s", string);
-
-	/*FILE *file;
+	FILE *file;
 	char * line = NULL;
-	if ((file = fopen("/Users/fabianterhorst/bla.txt", "r")) != NULL) {
+	if ((file = fopen("/Users/fabianterhorst/bla.txt", "r"))) {
 		size_t len = 0;
 		int count = 1;
-		while ((getline(&line, &len, file)) != -1) {
+		while ((getline(&line, &len, file)) != END_READ) {
 			printf("%d. Zeile %s", count, line);
 			count++;
 		}
 	} else {
-		printf("nope");
 		return EXIT_FAILURE;
 	}
 	fclose(file);
 	if (line)
-		free(line);*/
-
-	//int puffer[5][2]={{1, 564}, {2, 123}, {3, 74}, {4, 297}, {5, 846}};
+		free(line);
+	printf("\n");
 
 	long values[RANDOM_LENGTH][KEY_VALUE];
 	randomize(values);
-	for (int i = 0;i < RANDOM_LENGTH; i++) {
+	/*for (int i = 0;i < RANDOM_LENGTH; i++) {
 		printf("index: %ld value: %ld \n", values[i][0], values[i][1]);
-	}
-	time_t vorher=time(NULL); // Anzahl Sekunden seit 1.1.1970 0:0
+	}*/
+	struct timeval tv;
+	struct timeval tv2;
+	gettimeofday(&tv, NULL);
 	quick_sort(values);
-	time_t nachher=time(NULL); // Anzahl Sekunden seit 1.1.1970 0:0
 	fflush(stdout);
-	printf("Dauer: %d Sekunden\n", (int)(nachher-vorher));
-	for (int i = 0;i < RANDOM_LENGTH; i++) {
+	gettimeofday(&tv2, NULL);
+	printf("Dauer: %ld µs\n",(long)(tv2.tv_usec-tv.tv_usec));
+	/*for (int i = 0;i < RANDOM_LENGTH; i++) {
 		printf("index: %ld value: %ld \n", values[i][0], values[i][1]);
-	}
+	}*/
 
-
+	run_all_tests();
 
 	return EXIT_SUCCESS;
 }
