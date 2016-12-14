@@ -16,6 +16,22 @@ void test_file_open_error() {
 	assert(fopen("/Users/fabianterhorst/bla2.txt", "r") == NULL);
 }
 
+void test_file_read_line_success() {
+	FILE *file = fopen("/Users/fabianterhorst/bla.txt", "r");
+	size_t len = 0;
+	char * line = NULL;
+	assert(getline(&line, &len, file) != END_READ);
+	assert(strcmp(line,"bla1 bla\n") == 0);
+}
+
+void test_file_read_line_error() {
+	FILE *file = fopen("/Users/fabianterhorst/bla.txt", "r");
+	size_t len = 0;
+	char * line = NULL;
+	assert(getline(&line, &len, file) != END_READ);
+	assert(strcmp(line,"bla1 bla2\n") != 0);
+}
+
 void test_randomize_length() {
 	long values[RANDOM_LENGTH][KEY_VALUE];
 	randomize(RANDOM_LENGTH, values);
@@ -45,4 +61,6 @@ void run_all_tests() {
 	test_file_open_error();
 	test_randomize_length();
 	test_quick_sort();
+	test_file_read_line_success();
+	test_file_read_line_error();
 }
