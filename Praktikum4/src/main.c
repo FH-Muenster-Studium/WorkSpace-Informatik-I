@@ -33,14 +33,14 @@ int main(void) {
 	printf("\n");
 
 	long values[RANDOM_LENGTH][KEY_VALUE];
-	randomize(values);
+	randomize(RANDOM_LENGTH, values);
 	/*for (int i = 0;i < RANDOM_LENGTH; i++) {
 		printf("index: %ld value: %ld \n", values[i][0], values[i][1]);
 	}*/
 	struct timeval tv;
 	struct timeval tv2;
 	gettimeofday(&tv, NULL);
-	quick_sort(values);
+	quick_sort(RANDOM_LENGTH, values);
 	fflush(stdout);
 	gettimeofday(&tv2, NULL);
 	printf("Dauer: %ld µs\n",(long)(tv2.tv_usec-tv.tv_usec));

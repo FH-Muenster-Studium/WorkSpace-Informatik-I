@@ -21,7 +21,7 @@
  *
  * @param values the long array to randomize
  */
-void randomize(long values[RANDOM_LENGTH][KEY_VALUE]);
+void randomize(long size, long values[][KEY_VALUE]);
 
 /*
  * Diese Funktion sortiert die Daten im Parameter "daten"
@@ -29,7 +29,7 @@ void randomize(long values[RANDOM_LENGTH][KEY_VALUE]);
  * aufgerufen werden, sondern über die Funktion
  * "quick_sort(char *daten)".
  */
-void qs(long daten[RANDOM_LENGTH][KEY_VALUE], long links, long rechts);
+void qs(long daten[][KEY_VALUE], long links, long rechts);
 
 /**
  * Diese Funktion bereitet den Aufruf der Rekursiven "qs"
@@ -38,6 +38,6 @@ void qs(long daten[RANDOM_LENGTH][KEY_VALUE], long links, long rechts);
  * Der Parameter "daten" enthält die Daten, die sortiert
  * werden sollen.
  */
-void quick_sort(long daten[RANDOM_LENGTH][KEY_VALUE]);
+void quick_sort(long size, long daten[][KEY_VALUE]);
 
 #endif /* PRAKTIKUM4_H_ */
