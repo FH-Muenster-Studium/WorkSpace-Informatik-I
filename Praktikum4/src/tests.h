@@ -9,8 +9,6 @@
 #define TESTS_H_
 
 #include <assert.h>
-#include <stdio.h>
-#include <stdlib.h>
 
 void test_file_open_success();
 

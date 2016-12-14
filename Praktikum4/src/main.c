@@ -31,19 +31,22 @@ int main(void) {
 	if (line)
 		free(line);
 	printf("\n");
-
-	long values[RANDOM_LENGTH][KEY_VALUE];
-	randomize(RANDOM_LENGTH, values);
 	/*for (int i = 0;i < RANDOM_LENGTH; i++) {
 		printf("index: %ld value: %ld \n", values[i][0], values[i][1]);
 	}*/
 	struct timeval tv;
 	struct timeval tv2;
-	gettimeofday(&tv, NULL);
-	quick_sort(RANDOM_LENGTH, values);
-	fflush(stdout);
-	gettimeofday(&tv2, NULL);
-	printf("Dauer: %ld µs\n",(long)(tv2.tv_usec-tv.tv_usec));
+	int size;
+	for (int i = 1;i < 6;i++) {
+		size = (int) round(pow(10, i));
+		long values[size][KEY_VALUE];
+		randomize(size, values);
+		gettimeofday(&tv, NULL);
+		quick_sort(size, values);
+		fflush(stdout);
+		gettimeofday(&tv2, NULL);
+		printf("Dauer: %d %ld µs\n",size,(long)(tv2.tv_usec-tv.tv_usec));
+	}
 	/*for (int i = 0;i < RANDOM_LENGTH; i++) {
 		printf("index: %ld value: %ld \n", values[i][0], values[i][1]);
 	}*/

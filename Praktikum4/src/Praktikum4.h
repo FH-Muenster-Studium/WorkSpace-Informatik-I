@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <math.h>
 
 /*
  * fill a given long array with random values and numerate the indices from 1 to RANDOM_LENGTH

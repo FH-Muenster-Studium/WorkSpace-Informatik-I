@@ -34,6 +34,8 @@ void test_quick_sort() {
 	for (int i = 0;i < RANDOM_LENGTH;i++) {
 		if (i + 1 < RANDOM_LENGTH) {
 			assert(values[i+1][1] >= values[i][1]);
+		} else if(RANDOM_LENGTH > 1) {
+			assert(values[i][1] >= values[i-1][1]);
 		}
 	}
 }
