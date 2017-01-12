@@ -57,24 +57,47 @@ void removeVocable(char *name) {
 }
 
 void saveVocables(char *filePath) {
-
+	/*FILE *f;
+	if ((f = fopen(filePath, "w+")) != NULL) {
+		fputs(vocablesToString(), f);
+		//flose(f);
+	}*/
 }
 
+void loadVocables(char *filePath) {
+	/*FILE *f;
+	if ((f = fopen(filePath, "r")) != NULL) {
+		char* text;
+		do {
+			//text = fgetc(f);
+		} while(!feof(f));
+		flose(f);
+		vocablesFromString(text);
+	}*/
+}
+
+/*
+ *
+ * bla;bla,bla2;bla2,bla3;bla3
+ *
+ */
 char* vocablesToString() {
 	VOCABLE *curr = start;
-	char* string = "";
 	char* oldString= "";
 	char* seperator = ",";
 	while(curr != NULL) {
 		char* vocableString = vocableToString(curr);
-		string = malloc(strlen(string) + strlen(seperator) + strlen(vocableString));
+		char* string = malloc(strlen(oldString) + strlen(vocableString) + strlen(seperator));
 		strcat(string, oldString);
 		strcat(string, vocableString);
-		strcat(string, seperator);
-		oldString = string;
 		curr = curr->next;
+		if (curr != NULL) {
+			strcat(string, seperator);
+		}
+		oldString = string;
 	}
-	return string;
+	printf("%s \n", oldString);
+	return oldString;
 }
 
 void vocablesFromString(char* string) {
@@ -82,9 +105,9 @@ void vocablesFromString(char* string) {
 	split(string, ',', &arr);
 	int count = 0;
 	char *curr;
+	//Todo: remove strlen because its always true
 	while((curr = arr[count++]) != NULL && strlen(curr) > 0) {
 		VOCABLE voc;
-		initVocable(&voc);
 		vocableFromString(curr, &voc);
 		addVocable(&voc);
 	}
@@ -111,6 +134,7 @@ void vocableFromString(char *string, VOCABLE *vocable) {
 	initVocable(vocable);
 	vocable->wordEnglish = arr[0];
 	vocable->wordGerman = arr[1];
+	free(arr);
 }
 
 int split (char *str, char c, char ***arr) {

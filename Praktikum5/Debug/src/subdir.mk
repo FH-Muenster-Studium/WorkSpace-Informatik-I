@@ -5,14 +5,17 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
 ../src/Praktikum5.c \
+../src/Tests.c \
 ../src/main.c 
 
 OBJS += \
 ./src/Praktikum5.o \
+./src/Tests.o \
 ./src/main.o 
 
 C_DEPS += \
 ./src/Praktikum5.d \
+./src/Tests.d \
 ./src/main.d 
 
 
