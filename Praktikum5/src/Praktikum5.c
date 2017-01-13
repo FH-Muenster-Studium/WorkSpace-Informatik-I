@@ -132,9 +132,29 @@ void vocableFromString(char *string, VOCABLE *vocable) {
 	char** arr;
 	split(string, ';', &arr);
 	initVocable(vocable);
-	vocable->wordEnglish = arr[0];
-	vocable->wordGerman = arr[1];
+	char *english = malloc(COMMAND_LENGTH);
+	char *german = malloc(COMMAND_LENGTH);
+	memcpy(english, arr[0], COMMAND_LENGTH);
+	memcpy(german, arr[1], COMMAND_LENGTH);
 	free(arr);
+	vocable->wordEnglish = english;
+	vocable->wordGerman = german;
+}
+
+int vocableCount() {
+	VOCABLE *curr = start;
+	int count = 0;
+	printf("%s %s", start->wordEnglish, start->wordGerman);
+	/*while(curr != NULL) {
+		printf("bla %s", curr->wordEnglish);
+		fflush(stdin);
+		count++;
+		curr = curr->next;
+		if (curr == NULL) {
+			break;
+		}
+	}*/
+	return count;
 }
 
 int split (char *str, char c, char ***arr) {

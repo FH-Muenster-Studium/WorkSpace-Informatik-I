@@ -7,8 +7,6 @@
 
 #include "Praktikum5.h"
 
-#define COMMAND_LENGTH 100
-
 typedef enum {ADD, REMOVE, SAVE, EXIT, SHOW, UNSET} Command;
 
 #define COMMAND_ADD "add"
@@ -16,6 +14,14 @@ typedef enum {ADD, REMOVE, SAVE, EXIT, SHOW, UNSET} Command;
 #define COMMAND_SAVE "save"
 #define COMMAND_EXIT "exit"
 #define COMMAND_SHOW "show"
+
+void initRandomize() {
+	srandom((unsigned) time(NULL));
+}
+
+int randomVocableIndex() {
+	return random() % vocableCount();
+}
 
 void executeCommand(Command *lastCommand, Command currCommand, char command[COMMAND_LENGTH]) {
 	switch(currCommand) {
@@ -35,13 +41,19 @@ void executeCommand(Command *lastCommand, Command currCommand, char command[COMM
 
 		break;
 	case SHOW:
-
+		printf("%s %s\n", getFirst()->wordGerman, getFirst()->wordEnglish);
+		printf("%d\n", randomVocableIndex());
 		break;
 	case UNSET:
 		switch(*lastCommand) {
 		case ADD:
-			printf("ADD %s \n", command);
+		{
+			VOCABLE *voc = malloc(sizeof(VOCABLE));
+			vocableFromString(command, voc);
+			addVocable(voc);
+			printf("Vokabel: %s;%s erfolgreich hinzugefügt\n", getFirst()->wordEnglish,  getFirst()->wordGerman);
 			break;
+		}
 		case REMOVE:
 			break;
 		case SAVE:
@@ -74,8 +86,8 @@ Command commandFromString(char string[COMMAND_LENGTH]) {
 	} else if(isCommand(string, COMMAND_SHOW)) {
 		return SHOW;
 	}
-	printf("Ungültiges Command '%s'", string);
-	exit(1);
+	printf("Ungültiges Command '%s'\n", string);
+	return UNSET;
 }
 
 void normalizeInput(char* pos, char string[COMMAND_LENGTH]) {
@@ -84,6 +96,7 @@ void normalizeInput(char* pos, char string[COMMAND_LENGTH]) {
 }
 
 int main(void) {
+	initRandomize();
 	printf("'add' Fügt eine Vokabel hinzu.\n");
 	printf("'remove' Löscht eine Vokabel.\n");
 	printf("'save' Speichert die Änderungen.\n");
@@ -103,6 +116,7 @@ int main(void) {
 			currCommand = UNSET;
 		}
 		executeCommand(&lastCommand, currCommand, command);
+		fflush(stdin);
 	}
 	return EXIT_SUCCESS;
 }
