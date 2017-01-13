@@ -76,28 +76,20 @@ void loadVocables(char *filePath) {
 	}*/
 }
 
-/*
- *
- * bla;bla,bla2;bla2,bla3;bla3
- *
- */
 char* vocablesToString() {
 	VOCABLE *curr = start;
-	char* oldString= "";
+	char *currString = calloc(0, 0);
 	char* seperator = ",";
 	while(curr != NULL) {
 		char* vocableString = vocableToString(curr);
-		char* string = malloc(strlen(oldString) + strlen(vocableString) + strlen(seperator));
-		strcat(string, oldString);
-		strcat(string, vocableString);
+		currString = realloc(currString, sizeof(currString) + sizeof(vocableString) + sizeof(seperator));
+		strcat(currString, vocableString);
 		curr = curr->next;
 		if (curr != NULL) {
-			strcat(string, seperator);
+			strcat(currString, seperator);
 		}
-		oldString = string;
 	}
-	printf("%s \n", oldString);
-	return oldString;
+	return currString;
 }
 
 void vocablesFromString(char* string) {
@@ -105,11 +97,10 @@ void vocablesFromString(char* string) {
 	split(string, ',', &arr);
 	int count = 0;
 	char *curr;
-	//Todo: remove strlen because its always true
 	while((curr = arr[count++]) != NULL && strlen(curr) > 0) {
-		VOCABLE voc;
-		vocableFromString(curr, &voc);
-		addVocable(&voc);
+		VOCABLE *voc = malloc(sizeof(VOCABLE));
+		vocableFromString(curr, voc, strlen(curr));
+		addVocable(voc);
 	}
 }
 
@@ -118,7 +109,9 @@ char* vocableToString(VOCABLE *vocable) {
 	char* seperator = ";";
 	char* german = vocable->wordGerman;
 	char* string = malloc(strlen(english) + strlen(seperator) + strlen(german));
-	strcpy(string, english);
+	//memcpy(string, english, strlen(english));
+	//strcpy(string, english);
+	strcat(string, english);
 	strcat(string, seperator);
 	strcat(string, german);
 	return string;
@@ -128,14 +121,14 @@ VOCABLE* getFirst() {
 	return start;
 }
 
-void vocableFromString(char *string, VOCABLE *vocable) {
+void vocableFromString(char *string, VOCABLE *vocable, size_t size) {
 	char** arr;
 	split(string, ';', &arr);
 	initVocable(vocable);
-	char *english = malloc(COMMAND_LENGTH);
-	char *german = malloc(COMMAND_LENGTH);
-	memcpy(english, arr[0], COMMAND_LENGTH);
-	memcpy(german, arr[1], COMMAND_LENGTH);
+	char *english = malloc(size);
+	char *german = malloc(size);
+	memcpy(english, arr[0], size);
+	memcpy(german, arr[1], size);
 	free(arr);
 	vocable->wordEnglish = english;
 	vocable->wordGerman = german;
@@ -144,17 +137,30 @@ void vocableFromString(char *string, VOCABLE *vocable) {
 int vocableCount() {
 	VOCABLE *curr = start;
 	int count = 0;
-	printf("%s %s", start->wordEnglish, start->wordGerman);
-	/*while(curr != NULL) {
-		printf("bla %s", curr->wordEnglish);
-		fflush(stdin);
+	while(curr != NULL) {
 		count++;
 		curr = curr->next;
 		if (curr == NULL) {
 			break;
 		}
-	}*/
+	}
 	return count;
+}
+
+VOCABLE* vocableForIndex(int index) {
+	VOCABLE *curr = start;
+	int count = 0;
+	while(curr != NULL) {
+		count++;
+		if (count == index) {
+			return curr;
+		}
+		curr = curr->next;
+		if (curr == NULL) {
+			break;
+		}
+	}
+	return NULL;
 }
 
 int split (char *str, char c, char ***arr) {

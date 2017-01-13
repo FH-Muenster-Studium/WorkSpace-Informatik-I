@@ -16,8 +16,6 @@
 //Todo: create a Vocable and VocableItem struct
 //Todo: the item contains the prev, next ptr and the struct the german and english translation
 
-#define COMMAND_LENGTH 100
-
 typedef struct Vocable {
 	char *wordEnglish;
 	char *wordGerman;
@@ -33,7 +31,7 @@ void removeVocable(char *name);
 
 VOCABLE* getFirst();
 
-void vocableFromString(char *string, VOCABLE *vocable);
+void vocableFromString(char *string, VOCABLE *vocable, size_t size);
 
 int split (char *str, char c, char ***arr);
 
@@ -46,5 +44,7 @@ void vocablesFromString(char* string);
 void saveVocables(char *filePath);
 
 int vocableCount();
+
+VOCABLE* vocableForIndex(int index);
 
 #endif /* PRAKTIKUM5_H_ */

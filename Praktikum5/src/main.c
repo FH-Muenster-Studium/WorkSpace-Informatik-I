@@ -7,6 +7,8 @@
 
 #include "Praktikum5.h"
 
+#define COMMAND_LENGTH 100
+
 typedef enum {ADD, REMOVE, SAVE, EXIT, SHOW, UNSET} Command;
 
 #define COMMAND_ADD "add"
@@ -20,7 +22,8 @@ void initRandomize() {
 }
 
 int randomVocableIndex() {
-	return random() % vocableCount();
+	int randomInt = random() % vocableCount();
+	return randomInt == 0 ? 1 : randomInt;
 }
 
 void executeCommand(Command *lastCommand, Command currCommand, char command[COMMAND_LENGTH]) {
@@ -35,21 +38,19 @@ void executeCommand(Command *lastCommand, Command currCommand, char command[COMM
 
 		break;
 	case SAVE:
-
+		printf("%s\n", vocablesToString());
 		break;
 	case EXIT:
 
 		break;
 	case SHOW:
-		printf("%s %s\n", getFirst()->wordGerman, getFirst()->wordEnglish);
-		printf("%d\n", randomVocableIndex());
+		printf("%s\n", vocableForIndex(randomVocableIndex())->wordEnglish);
 		break;
 	case UNSET:
 		switch(*lastCommand) {
-		case ADD:
-		{
+		case ADD: {
 			VOCABLE *voc = malloc(sizeof(VOCABLE));
-			vocableFromString(command, voc);
+			vocableFromString(command, voc, COMMAND_LENGTH);
 			addVocable(voc);
 			printf("Vokabel: %s;%s erfolgreich hinzugefügt\n", getFirst()->wordEnglish,  getFirst()->wordGerman);
 			break;
