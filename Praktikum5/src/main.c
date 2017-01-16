@@ -23,7 +23,7 @@ void initRandomize() {
 
 int randomVocableIndex() {
 	int randomInt = random() % vocableCount();
-	return randomInt == 0 ? 1 : randomInt;
+	return ++randomInt;
 }
 
 void executeCommand(Command *lastCommand, Command currCommand, char command[COMMAND_LENGTH]) {
@@ -35,13 +35,17 @@ void executeCommand(Command *lastCommand, Command currCommand, char command[COMM
 		return;
 		break;
 	case REMOVE:
-
+		printf("Bitte geben Sie die Löschabfrage in folgender Schreibweise an: \n");
+		printf("[en(Englisch)/de(Deutsch)];[VokabelName]\n");
+		*lastCommand = currCommand;
+		return;
 		break;
 	case SAVE:
-		printf("%s\n", vocablesToString());
+		printf("%s\n", vocablesToStringWithNewLines());
+		saveVocables("/Users/fabianterhorst/bla.txt");
 		break;
 	case EXIT:
-
+		exit(1);
 		break;
 	case SHOW:
 		printf("%s\n", vocableForIndex(randomVocableIndex())->wordEnglish);
@@ -49,14 +53,19 @@ void executeCommand(Command *lastCommand, Command currCommand, char command[COMM
 	case UNSET:
 		switch(*lastCommand) {
 		case ADD: {
-			VOCABLE *voc = malloc(sizeof(VOCABLE));
+			VOCABLE *voc = initVocable();
 			vocableFromString(command, voc, COMMAND_LENGTH);
 			addVocable(voc);
-			printf("Vokabel: %s;%s erfolgreich hinzugefügt\n", getFirst()->wordEnglish,  getFirst()->wordGerman);
+			printf("Vokabel: %s;%s erfolgreich hinzugefügt\n", voc->wordEnglish,  voc->wordGerman);
 			break;
 		}
-		case REMOVE:
+		case REMOVE: {
+			char **arr;
+			split(command, ';', &arr);
+			removeVocable(arr[0], arr[1]);
+			printf("Vokabel erfolgreich gelöscht\n");
 			break;
+		}
 		case SAVE:
 			break;
 		case EXIT:
@@ -98,6 +107,7 @@ void normalizeInput(char* pos, char string[COMMAND_LENGTH]) {
 
 int main(void) {
 	initRandomize();
+	loadVocables("/Users/fabianterhorst/bla.txt");
 	printf("'add' Fügt eine Vokabel hinzu.\n");
 	printf("'remove' Löscht eine Vokabel.\n");
 	printf("'save' Speichert die Änderungen.\n");

@@ -23,11 +23,9 @@ typedef struct Vocable {
 	struct Vocable *next;
 } VOCABLE;
 
-void initVocable(VOCABLE *vocable);
+VOCABLE* initVocable();
 
 void addVocable(VOCABLE *vocable);
-
-void removeVocable(char *name);
 
 VOCABLE* getFirst();
 
@@ -39,12 +37,20 @@ char* vocableToString(VOCABLE *vocable);
 
 char* vocablesToString();
 
-void vocablesFromString(char* string);
+char* vocablesToStringWithNewLines();
+
+void vocablesFromString(char *string);
 
 void saveVocables(char *filePath);
+
+void loadVocables(char *filePath);
 
 int vocableCount();
 
 VOCABLE* vocableForIndex(int index);
+
+void removeNewLine(char *string);
+
+void removeVocable(char* lang, char *name);
 
 #endif /* PRAKTIKUM5_H_ */
