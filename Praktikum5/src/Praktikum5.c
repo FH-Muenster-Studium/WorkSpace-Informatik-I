@@ -10,22 +10,27 @@
 
 #include "Praktikum5.h"
 
-VOCABLE *start = NULL;
+ITEM *start = NULL;
+
+ITEM* initItem() {
+	ITEM* item = calloc(1, sizeof(ITEM));
+	return item;
+}
 
 VOCABLE* initVocable() {
 	VOCABLE* vocable = calloc(1, sizeof(VOCABLE));
 	return vocable;
 }
 
-void addVocable(VOCABLE *vocable) {
+void addItem(ITEM *item) {
 	if (start == NULL) {
-		start = vocable;
+		start = item;
 	} else {
-		VOCABLE *curr = start;
+		ITEM *curr = start;
 		do {
 			if (curr->next == NULL) {
-				curr->next = vocable;
-				vocable->prev = curr;
+				curr->next = item;
+				item->prev = curr;
 				break;
 			} else {
 				curr = curr->next;
@@ -35,13 +40,14 @@ void addVocable(VOCABLE *vocable) {
 }
 
 int removeVocable(char* lang, char *name) {
-	VOCABLE *curr = start;
+	ITEM *curr = start;
 	while(curr != NULL) {
 		char* compareName;
+		VOCABLE *voc = vocableFromItem(curr);
 		if (!strcmp(lang, "de")) {
-			compareName = curr->wordGerman;
+			compareName = voc->wordGerman;
 		} else if (!strcmp(lang, "en")) {
-			compareName = curr->wordEnglish;
+			compareName = voc->wordEnglish;
 		}
 		if(!strcmp(name, compareName)) {
 			//Wenn die erste gelöscht wird wird die 2. zur ersten
@@ -90,10 +96,12 @@ void loadVocables(char *filePath) {
 		f = fopen(filePath, "wb");
 	}
 	while ((read = getline(&line, &len, f)) != -1) {
+		ITEM *item = initItem();
 		VOCABLE *vocable = initVocable();
+		item->data = vocable;
 		removeNewLine(line);
 		vocableFromString(line, vocable, sizeof(line));
-		addVocable(vocable);
+		addItem(item);
 		printf("Vokabel de: %s en: %s geladen\n", vocable->wordEnglish, vocable->wordGerman);
 	}
 	free(line);
@@ -101,12 +109,14 @@ void loadVocables(char *filePath) {
 }
 
 char* vocablesToStringWithNewLines() {
-	VOCABLE *curr = start;
+	ITEM *curr = start;
 	char *currString = calloc(0, 0);
 	char *seperator = "\n";
 	char *vocableString;
+	VOCABLE *voc;
 	while(curr != NULL) {
-		vocableString = vocableToString(curr);
+		voc = vocableFromItem(curr);
+		vocableString = vocableToString(voc);
 		currString = realloc(currString, sizeof(currString) + sizeof(vocableString) + sizeof(seperator));
 		if (currString == NULL) {
 			//return null if length does not fit into heap
@@ -132,7 +142,7 @@ char* vocableToString(VOCABLE *vocable) {
 	return string;
 }
 
-VOCABLE* getFirst() {
+ITEM* getFirst() {
 	return start;
 }
 
@@ -146,7 +156,7 @@ void vocableFromString(char *string, VOCABLE *vocable, size_t size) {
 }
 
 int vocableCount() {
-	VOCABLE *curr = start;
+	ITEM *curr = start;
 	int count = 0;
 	while(curr != NULL) {
 		count++;
@@ -158,8 +168,8 @@ int vocableCount() {
 	return count;
 }
 
-VOCABLE* vocableForIndex(int index) {
-	VOCABLE *curr = start;
+ITEM* itemForIndex(int index) {
+	ITEM *curr = start;
 	int count = 0;
 	while(curr != NULL) {
 		count++;
@@ -172,6 +182,14 @@ VOCABLE* vocableForIndex(int index) {
 		}
 	}
 	return NULL;
+}
+
+VOCABLE *vocableFromItem(ITEM *item) {
+	return (VOCABLE*)item->data;
+}
+
+VOCABLE *vocableForIndex(int index) {
+	return vocableFromItem(itemForIndex(index));
 }
 
 void removeNewLine(char *string) {
