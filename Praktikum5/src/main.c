@@ -42,13 +42,17 @@ void executeCommand(Command *lastCommand, Command currCommand, char command[COMM
 		break;
 	case SAVE:
 		printf("%s\n", vocablesToStringWithNewLines());
-		saveVocables("/Users/fabianterhorst/bla.txt");
+		saveVocables("/Users/fabianterhorst/vocable.txt");
 		break;
 	case EXIT:
 		exit(1);
 		break;
 	case SHOW: {
 		VOCABLE *voc = vocableForIndex(randomVocableIndex());
+		if (voc == NULL) {
+			printf("Keine Vokabeln vorhanden\n");
+			break;
+		}
 		printf("Übersetzen Sie %s nach Englisch\n", voc->wordGerman);
 		fgets (command, COMMAND_LENGTH, stdin);
 		removeNewLine(command);
@@ -81,8 +85,11 @@ void executeCommand(Command *lastCommand, Command currCommand, char command[COMM
 			char *name = malloc(COMMAND_LENGTH);
 			memcpy(lang, strtok(command, ";"), COMMAND_LENGTH);
 			memcpy(name, strtok(NULL, ";"), COMMAND_LENGTH);
-			removeVocable(lang, name);
-			printf("Vokabel erfolgreich gelöscht %s %s\n", lang, name);
+			if (removeVocable(lang, name)) {
+				printf("Vokabel erfolgreich gelöscht %s %s\n", lang, name);
+			} else {
+				printf("Vokabel konnte nicht gelöscht werden %s %s\n", lang, name);
+			}
 			free(lang);
 			free(name);
 			break;
@@ -123,7 +130,7 @@ Command commandFromString(char string[COMMAND_LENGTH]) {
 
 int main(void) {
 	initRandomize();
-	loadVocables("/Users/fabianterhorst/bla.txt");
+	loadVocables("/Users/fabianterhorst/vocable.txt");
 	printf("'add' Fügt eine Vokabel hinzu.\n");
 	printf("'remove' Löscht eine Vokabel.\n");
 	printf("'save' Speichert die Änderungen.\n");

@@ -13,9 +13,7 @@
 VOCABLE *start = NULL;
 
 VOCABLE* initVocable() {
-	VOCABLE* vocable = malloc(sizeof(VOCABLE));
-	vocable->next = NULL;
-	vocable->prev = NULL;
+	VOCABLE* vocable = calloc(1, sizeof(VOCABLE));
 	return vocable;
 }
 
@@ -36,7 +34,7 @@ void addVocable(VOCABLE *vocable) {
 	}
 }
 
-void removeVocable(char* lang, char *name) {
+int removeVocable(char* lang, char *name) {
 	VOCABLE *curr = start;
 	while(curr != NULL) {
 		char* compareName;
@@ -63,11 +61,14 @@ void removeVocable(char* lang, char *name) {
 				curr->prev->next = curr->next;
 				free(curr);
 				//curr = NULL;
-				break;
+
+				//break;
 			}
+			return true;
 		}
 		curr = curr->next;
 	}
+	return false;
 }
 
 void saveVocables(char *filePath) {
@@ -75,46 +76,28 @@ void saveVocables(char *filePath) {
 	if ((f = fopen(filePath, "w+")) != NULL) {
 		char* str = vocablesToStringWithNewLines();
 		fwrite(str , sizeof(char) , strlen(str) , f);
+		free(str);
 		fclose(f);
 	}
 }
 
 void loadVocables(char *filePath) {
-	FILE *f;
+	FILE *f = fopen(filePath, "r");
 	char *line = NULL;
 	size_t len = 0;
 	ssize_t read;
-	if ((f = fopen(filePath, "r")) != NULL) {
-		while ((read = getline(&line, &len, f)) != -1) {
-			VOCABLE *vocable = initVocable();
-			removeNewLine(line);
-			vocableFromString(line, vocable, sizeof(line));
-			addVocable(vocable);
-			printf("Vokabel de: %s en: %s geladen\n", vocable->wordEnglish, vocable->wordGerman);
-		}
-		fclose(f);
+	if(!f) {
+		f = fopen(filePath, "wb");
 	}
-}
-
-char* vocablesToString() {
-	VOCABLE *curr = start;
-	char *currString = calloc(0, 0);
-	char *seperator = ",";
-	char *vocableString;
-	while(curr != NULL) {
-		vocableString = vocableToString(curr);
-		currString = realloc(currString, sizeof(currString) + sizeof(vocableString) + sizeof(seperator));
-		if (currString == NULL) {
-			//return null if length does not fit into heap
-			return currString;
-		}
-		strcat(currString, vocableString);
-		curr = curr->next;
-		if (curr != NULL) {
-			strcat(currString, seperator);
-		}
+	while ((read = getline(&line, &len, f)) != -1) {
+		VOCABLE *vocable = initVocable();
+		removeNewLine(line);
+		vocableFromString(line, vocable, sizeof(line));
+		addVocable(vocable);
+		printf("Vokabel de: %s en: %s geladen\n", vocable->wordEnglish, vocable->wordGerman);
 	}
-	return currString;
+	free(line);
+	fclose(f);
 }
 
 char* vocablesToStringWithNewLines() {
@@ -138,18 +121,6 @@ char* vocablesToStringWithNewLines() {
 	return currString;
 }
 
-/*void vocablesFromString(char* string) {
-	char **arr;
-	split(string, ',', &arr);
-	int count = 0;
-	char *curr;
-	while((curr = arr[count++]) != NULL && strlen(curr) > 0) {
-		VOCABLE *voc = initVocable();
-		vocableFromString(curr, voc, strlen(curr));
-		addVocable(voc);
-	}
-}*/
-
 char* vocableToString(VOCABLE *vocable) {
 	char *english = vocable->wordEnglish;
 	char *seperator = ";";
@@ -166,15 +137,6 @@ VOCABLE* getFirst() {
 }
 
 void vocableFromString(char *string, VOCABLE *vocable, size_t size) {
-	/*char **arr;
-	split(string, ';', &arr);
-	char *english = malloc(size);
-	char *german = malloc(size);
-	memcpy(english, arr[0], size);
-	memcpy(german, arr[1], size);
-	free(arr);
-	vocable->wordEnglish = english;
-	vocable->wordGerman = german;*/
 	char *english = malloc(size);
 	char *german = malloc(size);
 	memcpy(english, strtok(string, ";"), size);

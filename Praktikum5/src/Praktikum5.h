@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <stdbool.h>
 
 //Todo: create a Vocable and VocableItem struct
 //Todo: the item contains the prev, next ptr and the struct the german and english translation
@@ -33,11 +34,7 @@ void vocableFromString(char *string, VOCABLE *vocable, size_t size);
 
 char* vocableToString(VOCABLE *vocable);
 
-char* vocablesToString();
-
 char* vocablesToStringWithNewLines();
-
-/*void vocablesFromString(char *string);*/
 
 void saveVocables(char *filePath);
 
@@ -49,6 +46,6 @@ VOCABLE* vocableForIndex(int index);
 
 void removeNewLine(char *string);
 
-void removeVocable(char* lang, char *name);
+int removeVocable(char* lang, char *name);
 
 #endif /* PRAKTIKUM5_H_ */
