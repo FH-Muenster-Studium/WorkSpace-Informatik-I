@@ -47,9 +47,18 @@ void executeCommand(Command *lastCommand, Command currCommand, char command[COMM
 	case EXIT:
 		exit(1);
 		break;
-	case SHOW:
-		printf("%s\n", vocableForIndex(randomVocableIndex())->wordEnglish);
+	case SHOW: {
+		VOCABLE *voc = vocableForIndex(randomVocableIndex());
+		printf("Übersetzen Sie %s nach Englisch\n", voc->wordGerman);
+		fgets (command, COMMAND_LENGTH, stdin);
+		removeNewLine(command);
+		if (!strcmp(command, voc->wordEnglish)) {
+			printf("richtig\n");
+		} else {
+			printf("falsch, das richtige Wort heißt %s\n", voc->wordEnglish);
+		}
 		break;
+	}
 	case UNSET:
 		switch(*lastCommand) {
 		case ADD: {
@@ -60,10 +69,22 @@ void executeCommand(Command *lastCommand, Command currCommand, char command[COMM
 			break;
 		}
 		case REMOVE: {
-			char **arr;
-			split(command, ';', &arr);
-			removeVocable(arr[0], arr[1]);
-			printf("Vokabel erfolgreich gelöscht\n");
+			printf("Sind Sie sicher das Sie folgende Vokabel wirklich löschen möchten? %s\n", command);
+			char question[COMMAND_LENGTH];
+			fgets (question, COMMAND_LENGTH, stdin);
+			removeNewLine(question);
+			if(strcmp(question, "ja")) {
+				printf("Löschen wurde abgebrochen\n");
+				break;
+			}
+			char *lang = malloc(COMMAND_LENGTH);
+			char *name = malloc(COMMAND_LENGTH);
+			memcpy(lang, strtok(command, ";"), COMMAND_LENGTH);
+			memcpy(name, strtok(NULL, ";"), COMMAND_LENGTH);
+			removeVocable(lang, name);
+			printf("Vokabel erfolgreich gelöscht %s %s\n", lang, name);
+			free(lang);
+			free(name);
 			break;
 		}
 		case SAVE:
@@ -100,11 +121,6 @@ Command commandFromString(char string[COMMAND_LENGTH]) {
 	return UNSET;
 }
 
-void normalizeInput(char* pos, char string[COMMAND_LENGTH]) {
-	if ((pos=strchr(string, '\n')) != NULL)
-		*pos = '\0';
-}
-
 int main(void) {
 	initRandomize();
 	loadVocables("/Users/fabianterhorst/bla.txt");
@@ -116,11 +132,10 @@ int main(void) {
 	char command[COMMAND_LENGTH];
 	Command currCommand = UNSET;
 	Command lastCommand = UNSET;
-	char pos;
 	while(1) {
 		fgets (command, COMMAND_LENGTH, stdin);
 		fflush(stdin);
-		normalizeInput(&pos, command);
+		removeNewLine(command);
 		if (lastCommand == UNSET) {
 			currCommand = commandFromString(command);
 		} else {

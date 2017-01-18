@@ -33,13 +33,6 @@ void addVocable(VOCABLE *vocable) {
 				curr = curr->next;
 			}
 		} while(1);
-		/*while(curr != NULL) {
-			if (curr->next == NULL) {
-				vocable->prev = curr;
-				break;
-			}
-		}
-		curr->next = vocable;*/
 	}
 }
 
@@ -56,14 +49,20 @@ void removeVocable(char* lang, char *name) {
 			//Wenn die erste gelöscht wird wird die 2. zur ersten
 			if (curr->prev == NULL) {
 				start = curr->next;
+				free(curr);
 			} else {
-				VOCABLE *next = curr->next;
+				/*VOCABLE *next = curr->next;
 				VOCABLE *prev = curr->prev;
 				curr->prev->next = next;
 				curr->next->prev = prev;
 				curr->next = NULL;
-				curr->prev = NULL;
-				curr = NULL;
+				curr->prev = NULL;*/
+				if (curr->next != NULL) {
+					curr->next->prev = curr->prev;
+				}
+				curr->prev->next = curr->next;
+				free(curr);
+				//curr = NULL;
 				break;
 			}
 		}
@@ -82,7 +81,7 @@ void saveVocables(char *filePath) {
 
 void loadVocables(char *filePath) {
 	FILE *f;
-	char * line = NULL;
+	char *line = NULL;
 	size_t len = 0;
 	ssize_t read;
 	if ((f = fopen(filePath, "r")) != NULL) {
@@ -139,7 +138,7 @@ char* vocablesToStringWithNewLines() {
 	return currString;
 }
 
-void vocablesFromString(char* string) {
+/*void vocablesFromString(char* string) {
 	char **arr;
 	split(string, ',', &arr);
 	int count = 0;
@@ -149,7 +148,7 @@ void vocablesFromString(char* string) {
 		vocableFromString(curr, voc, strlen(curr));
 		addVocable(voc);
 	}
-}
+}*/
 
 char* vocableToString(VOCABLE *vocable) {
 	char *english = vocable->wordEnglish;
@@ -167,14 +166,19 @@ VOCABLE* getFirst() {
 }
 
 void vocableFromString(char *string, VOCABLE *vocable, size_t size) {
-	//Todo: remove malloc
-	char **arr;
+	/*char **arr;
 	split(string, ';', &arr);
 	char *english = malloc(size);
 	char *german = malloc(size);
 	memcpy(english, arr[0], size);
 	memcpy(german, arr[1], size);
 	free(arr);
+	vocable->wordEnglish = english;
+	vocable->wordGerman = german;*/
+	char *english = malloc(size);
+	char *german = malloc(size);
+	memcpy(english, strtok(string, ";"), size);
+	memcpy(german, strtok(NULL, ";"), size);
 	vocable->wordEnglish = english;
 	vocable->wordGerman = german;
 }
@@ -206,66 +210,6 @@ VOCABLE* vocableForIndex(int index) {
 		}
 	}
 	return NULL;
-}
-
-int split (char *str, char c, char ***arr) {
-	int count = 1;
-	int token_len = 1;
-	int i = 0;
-	char *p;
-	char *t;
-
-	p = str;
-	while (*p != '\0')
-	{
-		if (*p == c)
-			count++;
-		p++;
-	}
-
-	*arr = (char**) malloc(sizeof(char*) * count);
-	if (*arr == NULL)
-		exit(1);
-
-	p = str;
-	while (*p != '\0')
-	{
-		if (*p == c)
-		{
-			(*arr)[i] = (char*) malloc( sizeof(char) * token_len );
-			if ((*arr)[i] == NULL)
-				exit(1);
-
-			token_len = 0;
-			i++;
-		}
-		p++;
-		token_len++;
-	}
-	(*arr)[i] = (char*) malloc( sizeof(char) * token_len );
-	if ((*arr)[i] == NULL)
-		exit(1);
-
-	i = 0;
-	p = str;
-	t = ((*arr)[i]);
-	while (*p != '\0')
-	{
-		if (*p != c && *p != '\0')
-		{
-			*t = *p;
-			t++;
-		}
-		else
-		{
-			*t = '\0';
-			i++;
-			t = ((*arr)[i]);
-		}
-		p++;
-	}
-
-	return count;
 }
 
 void removeNewLine(char *string) {

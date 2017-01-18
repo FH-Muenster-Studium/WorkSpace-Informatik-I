@@ -31,15 +31,13 @@ VOCABLE* getFirst();
 
 void vocableFromString(char *string, VOCABLE *vocable, size_t size);
 
-int split (char *str, char c, char ***arr);
-
 char* vocableToString(VOCABLE *vocable);
 
 char* vocablesToString();
 
 char* vocablesToStringWithNewLines();
 
-void vocablesFromString(char *string);
+/*void vocablesFromString(char *string);*/
 
 void saveVocables(char *filePath);
 
