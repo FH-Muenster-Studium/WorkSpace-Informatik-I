@@ -66,9 +66,11 @@ void executeCommand(Command *lastCommand, Command currCommand, char command[COMM
 	case UNSET:
 		switch(*lastCommand) {
 		case ADD: {
+			ITEM *item = initItem();
 			VOCABLE *voc = initVocable();
+			item->data = voc;
 			vocableFromString(command, voc, COMMAND_LENGTH);
-			addVocable(voc);
+			addItem(item);
 			printf("Vokabel: %s;%s erfolgreich hinzugefügt\n", voc->wordEnglish,  voc->wordGerman);
 			break;
 		}
